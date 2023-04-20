@@ -5,6 +5,7 @@ import org.webler.zsolt.model.Patron;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PatronRepository implements IPatronRepository {
 
@@ -14,34 +15,40 @@ public class PatronRepository implements IPatronRepository {
         this.patronDataSource = dataSource;
     }
 
-
-    @Override
-    public Optional<Patron> findPatronByLibraryCardNumber(long libraryCardNumber) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<Patron> findPatronByName(String name) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<Patron> findPatronByEmail(String email) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<Patron> findPatronByBorrowedBook(Book book) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean add(Patron patron) {
-        throw new UnsupportedOperationException();
+
+        if (!patronDataSource.stream().map(Patron::getLibraryCardNumber).collect(Collectors.toList()).contains(patron.getLibraryCardNumber())) {
+            return patronDataSource.add(patron);
+        }
+        return false;
     }
 
     @Override
     public boolean remove(Patron patron) {
-        throw new UnsupportedOperationException();
+        return patronDataSource.remove(patron);
     }
+
+    @Override
+    public Optional<Patron> findPatronByLibraryCardNumber(long libraryCardNumber) {
+        return patronDataSource.stream().filter(patron -> patron.getLibraryCardNumber() == libraryCardNumber).findFirst();
+    }
+
+    @Override
+    public List<Patron> findPatronByName(String name) {
+        return patronDataSource.stream().filter(patron -> patron.getName().equals(name)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Patron> findPatronByEmail(String email) {
+
+        return patronDataSource.stream().filter(patron -> patron.getEmail().equals(email)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Patron> findPatronByBorrowedBook(Book book) {
+        return patronDataSource.stream().filter(patron -> patron.getBorrowedBooks().contains(book)).collect(Collectors.toList());
+    }
+
+
 }

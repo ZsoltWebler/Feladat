@@ -6,13 +6,13 @@ import org.webler.zsolt.model.Patron;
 
 public interface ILibrarianService {
 
-    boolean addBook();
+    boolean addBook(Book book);
 
-    boolean removeBook();
+    boolean removeBook(Book book);
 
-    boolean addPatron();
+    boolean addPatron(Patron patron);
 
-    boolean removePatron();
+    boolean removePatron(Patron patron);
 
     void printBookInformation(Book book);
 
